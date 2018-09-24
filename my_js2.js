@@ -10,6 +10,36 @@ var mainDiv = document.getElementById('main');
 var style = window.getComputedStyle(mainDiv);
 var marginLeft = parseInt(style.getPropertyValue('margin-left'),10);
 
+// gets x and y coordinates for window object
+function getCoordinates(e) {
+            myGamePiece.x = e.clientX - marginLeft;
+            myGamePiece.y = e.clientY - marginTop;
+}
+// check if myGameArea overlaps a target
+function checkOverlap(target){
+	if(myGamePiece.x > target.x - target.radius &&
+       myGamePiece.x < target.x + target.radius &&
+       myGamePiece.y > target.y - target.radius &&
+       myGamePiece.y < target.y + target.radius) {
+       	return true;
+    }
+}
+
+// function checks if 
+function checkTargets(e) {
+    myGameArea.clicks++;
+    for (var i = 0; i < targets.length; i++) {
+        if(checkOverlap(targets[i])){
+        	targets.splice(i, 1);
+            if(targets.length === 0) {
+                myGameArea.stop();
+                document.getElementById('restart').style.display = 'block';
+                return;
+            }
+            return;
+        }
+    }
+}
 function setup(){
 	myGameArea = new gamearea();
 	myGamePiece = new Component(15, "rgba(255,0,0,0.5)", 150, 150);
@@ -28,8 +58,11 @@ function restartGame() {
     myGameArea = {};
     myGamePiece = {};
     targets = [];
+    // remove event listeners to avoid double events for window
+	window.removeEventListener('mousemove', getCoordinates);
+	window.removeEventListener('click', checkTargets);
     document.getElementById('canvasContainer').innerHTML = '';
-    setup();
+ 	setup();
     startGame();
 }
 
@@ -60,27 +93,8 @@ function gamearea() {
 
     this.start = function() {
         this.interval = setInterval(updateGameArea, 20);
-        window.addEventListener('mousemove', function(e) {
-            myGameArea.x = e.clientX - marginLeft;
-            myGameArea.y = e.clientY - marginTop;
-        });
-        window.addEventListener('click', function(e) {
-        	myGameArea.clicks++;
-            for (var i = 0; i < targets.length; i++) {
-                if(e.clientX - marginLeft> targets[i].x - targets[i].radius &&
-                    e.clientX - marginLeft< targets[i].x + targets[i].radius &&
-                    e.clientY - marginTop> targets[i].y - targets[i].radius &&
-                    e.clientY - marginTop< targets[i].y + targets[i].radius) {
-                    targets.splice(i, 1);
-                    if(targets.length === 0) {
-                        myGameArea.stop();
-                        document.getElementById('restart').style.display = 'block';
-                        return;
-                    }
-                    return;
-                }
-            }
-        });
+        window.addEventListener('mousemove', getCoordinates);
+        window.addEventListener('click', checkTargets);
         window.addEventListener('mousemove', function(e) {
             for (var i = 0; i < targets.length; i++) {
                 if(e.clientX > targets[i].x - targets[i].radius &&
