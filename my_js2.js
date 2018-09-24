@@ -1,22 +1,42 @@
 var myGameArea;
 var myGamePiece;
 var targets = [];
+const numTargets = 10;
+var myTime;
+var myScore;
+var numTries = 0;
+
+var marginTop = 50;
+var mainDiv = document.getElementById('main');
+var style = window.getComputedStyle(mainDiv);
+var marginLeft = parseInt(style.getPropertyValue('margin-left'),10);
+
+function setup(){
+	myGameArea = new gamearea();
+	myGamePiece = new Component(15, "rgba(255,0,0,0.5)", 150, 150);
+	myTime = new Score("20px Arial", "rgb(0,0,0)", 25, 25);
+	myScore = new Score("20px Arial", "rgb(0,0,0)", 400, 25);
+	myTime.text = "Time:";
+	myScore.text = "Clicks:";
+	myTime.update();
+	myScore.update();	
+}
 
 function restartGame() {
-    document.getElementById('restartBtn').style.display = "none";
+    document.getElementById('restart').style.display = "none";
     myGameArea.stop();
     myGameArea.clear();
     myGameArea = {};
     myGamePiece = {};
     targets = [];
     document.getElementById('canvasContainer').innerHTML = '';
+    setup();
     startGame();
 }
 
 function startGame() {
-    myGameArea = new gamearea();
-    myGamePiece = new Component(15, "rgba(255,0,0,0.5)", 150, 150);
-    for (var i = 0; i < 10; i++) {
+	document.getElementById('intro').style.display = "none";
+    for (var i = 0; i < numTargets; i++) {
         myTarget = new Target(Math.random()*20 + 8, // radius
                         "rgb(0, 0, 255)",   // color
                         Math.random()*500,  // x
@@ -36,25 +56,25 @@ function gamearea() {
     this.canvas.style.border = '1px solid black';
     this.context = this.canvas.getContext("2d");
     document.getElementById('canvasContainer').appendChild(this.canvas);
+    this.frameNo = 0;
 
     this.start = function() {
         this.interval = setInterval(updateGameArea, 20);
         window.addEventListener('mousemove', function(e) {
-            myGameArea.x = e.clientX;
-            myGameArea.y = e.clientY;
+            myGameArea.x = e.clientX - marginLeft;
+            myGameArea.y = e.clientY - marginTop;
         });
         window.addEventListener('click', function(e) {
-            console.log(e.clientX, e.clientY);
+        	numTries++;
             for (var i = 0; i < targets.length; i++) {
-                if(e.clientX > targets[i].x - targets[i].radius &&
-                    e.clientX < targets[i].x + targets[i].radius &&
-                    e.clientY > targets[i].y - targets[i].radius &&
-                    e.clientY < targets[i].y + targets[i].radius) {
-                    console.log('Click on target!!!');
+                if(e.clientX - marginLeft> targets[i].x - targets[i].radius &&
+                    e.clientX - marginLeft< targets[i].x + targets[i].radius &&
+                    e.clientY - marginTop> targets[i].y - targets[i].radius &&
+                    e.clientY - marginTop< targets[i].y + targets[i].radius) {
                     targets.splice(i, 1);
                     if(targets.length === 0) {
                         myGameArea.stop();
-                        document.getElementById('restartBtn').style.display = 'block';
+                        document.getElementById('restart').style.display = 'block';
                         return;
                     }
                     return;
@@ -62,13 +82,11 @@ function gamearea() {
             }
         });
         window.addEventListener('mousemove', function(e) {
-            console.log(e.clientX, e.clientY);
             for (var i = 0; i < targets.length; i++) {
                 if(e.clientX > targets[i].x - targets[i].radius &&
                     e.clientX < targets[i].x + targets[i].radius &&
                     e.clientY > targets[i].y - targets[i].radius &&
                     e.clientY < targets[i].y + targets[i].radius) {
-                    console.log('Right on target!!!');
                     targets[i].color = '#696969';
                 }
                 else targets[i].color = "rgb(0, 0, 255)";
@@ -91,7 +109,7 @@ function Component(radius, color, x, y) {
 }
 
 Component.prototype.draw = function() {
-    ctx = myGameArea.context;
+	ctx = myGameArea.context;
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.beginPath();
@@ -138,9 +156,23 @@ Target.prototype.update = function() {
     this.x += this.velX;
     this.y += this.velY;
 }
-
+function Score (radius, color, x, y, text){
+	Component.call(this, radius, color, x, y);
+    this.text = text;
+}
+Score.prototype.update = function() {
+    ctx = myGameArea.context;
+    ctx.font = this.radius;
+    ctx.color = this.color;
+    ctx.fillText(this.text, this.x, this.y);
+}
 function updateGameArea() {
     myGameArea.clear();
+    myGameArea.frameNo += 1;
+    myTime.text = "Time: " + Math.floor(myGameArea.frameNo/50);
+    myTime.update();
+    myScore.text = "Clicks: " + (numTries);
+    myScore.update();
     if (myGameArea.x && myGameArea.y) {
         myGamePiece.x = myGameArea.x;
         myGamePiece.y = myGameArea.y;
@@ -152,7 +184,6 @@ function updateGameArea() {
     for (var i = 0; i < targets.length; i++) {
         targets[i].draw();
     }
-
 }
 
-startGame();
+setup();

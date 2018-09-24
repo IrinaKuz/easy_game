@@ -1,0 +1,68 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+#main {
+	font: 16px Arial, sans-serif;
+    width: 500px;
+    height: 100vh;
+    margin: 0 auto;
+}
+#canvasContainer{
+	width: 500px;
+    margin: 0 auto;
+}
+canvas {
+    background-color: #FFFFFF;
+}
+h1{
+	height: 50px;
+	padding: 5px;
+	text-align: center;
+}
+#intro{
+	background-color: rgba(255,0,0,0.5);
+	border: 1px solid red;
+	border-radius: 5px;
+	position: absolute;
+	top: 200px;
+	left: calc(50% - 100px);
+	width: 200px;
+	height: 200px;
+	margin: 0 auto;
+}
+#introText{
+	text-align: center;
+	padding: 15px;
+	line-height: 150%;
+}
+#startBtn {
+	text-align: center;
+	width: 100px;
+	margin: 25px auto;
+	display: block;
+}
+#restart{
+	background-color: rgba(0,0,255,0.5);
+	border: 1px solid blue;
+	border-radius: 5px;
+	position: absolute;
+	top: 200px;
+	left: calc(50% - 100px);
+	width: 200px;
+	height: 200px;
+	margin: 0 auto;
+	display: none;
+}
+#youWon{
+	text-align: center;
+	padding: 15px;
+	line-height: 150%;
+}
+#restartBtn{
+	text-align: center;
+	width: 100px;
+	margin: 25px auto;
+	display: block;
+}

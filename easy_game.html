@@ -2,20 +2,25 @@
 <html>
 <head>
     <meta name="viewport" content="initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="easy_game_style.css">
 	<title>Catch it!</title>
-    <style>
-        body {
-            background-color: #99CC99;
-        }
-        canvas {
-            background-color: #FFFFFF;
-            border: 1px solid black;
-        }
-    </style>
+
 </head>
 <body>
-    <div id="restartBtn" style="position:absolute;top:240px;left:220px;display:none;"><button onclick="restartGame()">Restart</button></div>
-    <div id='canvasContainer'></div>
+    <div id="main">
+        <h1>Catch it!</h1>
+        <div id="intro">
+            <div id="introText">Click on all moving targets to win this game</div>
+            <button id="startBtn" onclick="startGame()">Start</button> 
+        </div>
+        <div id="restart">
+            <div id="youWon">Congratulations!</br>You won!</div>
+                <button id="restartBtn" onclick="restartGame()">Restart</button>
+        </div>
+        <div id='canvasContainer'>
+        </div>
+        <p>Catch it! is an easy game. You just need to click on all targets.</p>
+    </div>
 	<script type="text/javascript" src='my_js2.js'></script>
 </body>
 </html>
