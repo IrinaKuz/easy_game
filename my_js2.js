@@ -4,7 +4,6 @@ var targets = [];
 const numTargets = 10;
 var myTime;
 var myScore;
-var numTries = 0;
 
 var marginTop = 50;
 var mainDiv = document.getElementById('main');
@@ -57,6 +56,7 @@ function gamearea() {
     this.context = this.canvas.getContext("2d");
     document.getElementById('canvasContainer').appendChild(this.canvas);
     this.frameNo = 0;
+    this.clicks = 0;
 
     this.start = function() {
         this.interval = setInterval(updateGameArea, 20);
@@ -65,7 +65,7 @@ function gamearea() {
             myGameArea.y = e.clientY - marginTop;
         });
         window.addEventListener('click', function(e) {
-        	numTries++;
+        	this.clicks++;
             for (var i = 0; i < targets.length; i++) {
                 if(e.clientX - marginLeft> targets[i].x - targets[i].radius &&
                     e.clientX - marginLeft< targets[i].x + targets[i].radius &&
@@ -171,7 +171,7 @@ function updateGameArea() {
     myGameArea.frameNo += 1;
     myTime.text = "Time: " + Math.floor(myGameArea.frameNo/50);
     myTime.update();
-    myScore.text = "Clicks: " + (numTries);
+    myScore.text = "Clicks: " + myGameArea.clicks;
     myScore.update();
     if (myGameArea.x && myGameArea.y) {
         myGamePiece.x = myGameArea.x;
