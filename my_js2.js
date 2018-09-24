@@ -65,7 +65,7 @@ function gamearea() {
             myGameArea.y = e.clientY - marginTop;
         });
         window.addEventListener('click', function(e) {
-        	this.clicks++;
+        	myGameArea.clicks++;
             for (var i = 0; i < targets.length; i++) {
                 if(e.clientX - marginLeft> targets[i].x - targets[i].radius &&
                     e.clientX - marginLeft< targets[i].x + targets[i].radius &&
