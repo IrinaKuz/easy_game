@@ -12,10 +12,11 @@ var marginLeft = parseInt(style.getPropertyValue('margin-left'),10);
 
 // gets x and y coordinates for window object
 function getCoordinates(e) {
-            myGamePiece.x = e.clientX - marginLeft;
-            myGamePiece.y = e.clientY - marginTop;
+	e.preventDefault();
+    myGamePiece.x = e.clientX - marginLeft;
+    myGamePiece.y = e.clientY - marginTop;
 }
-// check if myGameArea overlaps a target
+// function checks if myGamePiece overlaps a target
 function checkOverlap(target){
 	if(myGamePiece.x > target.x - target.radius &&
        myGamePiece.x < target.x + target.radius &&
@@ -25,9 +26,13 @@ function checkOverlap(target){
     }
 }
 
-// function checks if 
+// function iterates through targets array to check each target if it overlaps 
+// with myGamePiece. If it does, the target is deleted from targets array
+// If the last target is deleted from the array, the function calls 
+// myGameArea.stop() function.
 function checkTargets(e) {
-    myGameArea.clicks++;
+	e.preventDefault();
+    myGameArea.clicks++; // count on number of clicks the user does
     for (var i = 0; i < targets.length; i++) {
         if(checkOverlap(targets[i])){
         	targets.splice(i, 1);
@@ -40,6 +45,7 @@ function checkTargets(e) {
         }
     }
 }
+// function initializes myGameAre, myGamePiece, myTime, and myScore
 function setup(){
 	myGameArea = new gamearea();
 	myGamePiece = new Component(15, "rgba(255,0,0,0.5)", 150, 150);
@@ -58,7 +64,7 @@ function restartGame() {
     myGameArea = {};
     myGamePiece = {};
     targets = [];
-    // remove event listeners to avoid double events for window
+    // remove event listeners to avoid same multiple events for window
 	window.removeEventListener('mousemove', getCoordinates);
 	window.removeEventListener('click', checkTargets);
     document.getElementById('canvasContainer').innerHTML = '';
@@ -69,10 +75,10 @@ function restartGame() {
 function startGame() {
 	document.getElementById('intro').style.display = "none";
     for (var i = 0; i < numTargets; i++) {
-        myTarget = new Target(Math.random()*20 + 8, // radius
+        myTarget = new Target(Math.random()*20 + 8, // radius in range 8-28
                         "rgb(0, 0, 255)",   // color
-                        Math.random()*500,  // x
-                        Math.random()*500,  // y
+                        Math.random()*500,  // x 
+                        Math.random()*500,  // y 
                         Math.random()*360,  // dir
                         Math.random()*2+1, // velX
                         Math.random()*2+1); // velY
@@ -85,7 +91,7 @@ function gamearea() {
     this.canvas = document.createElement("canvas"),
     this.canvas.width = 500;
     this.canvas.height = 500;
-    this.canvas.style.border = '1px solid black';
+
     this.context = this.canvas.getContext("2d");
     document.getElementById('canvasContainer').appendChild(this.canvas);
     this.frameNo = 0;
@@ -95,17 +101,6 @@ function gamearea() {
         this.interval = setInterval(updateGameArea, 20);
         window.addEventListener('mousemove', getCoordinates);
         window.addEventListener('click', checkTargets);
-        window.addEventListener('mousemove', function(e) {
-            for (var i = 0; i < targets.length; i++) {
-                if(e.clientX > targets[i].x - targets[i].radius &&
-                    e.clientX < targets[i].x + targets[i].radius &&
-                    e.clientY > targets[i].y - targets[i].radius &&
-                    e.clientY < targets[i].y + targets[i].radius) {
-                    targets[i].color = '#696969';
-                }
-                else targets[i].color = "rgb(0, 0, 255)";
-            }
-        })
     },
     this.clear = function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -155,16 +150,16 @@ Target.prototype.draw = function() {
 }
 
 Target.prototype.update = function() {
-    if (this.x + this.radius > 500) {
+    if (this.x + this.radius > 500 && this.velX > 0) {
         this.velX = -(this.velX);
     }
-    if (this.x - this.radius < 0) {
+    if (this.x - this.radius < 0 && this.velX < 0) {
         this.velX = -(this.velX);
     }
-    if (this.y + this.radius > 500) {
+    if (this.y + this.radius > 500 && this.velY > 0) {
         this.velY = -(this.velY);
     }
-    if (this.y - this.radius < 0) {
+    if (this.y - this.radius < 0 && this.velY < 0) {
         this.velY = -(this.velY);
     }
     this.x += this.velX;
