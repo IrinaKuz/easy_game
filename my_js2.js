@@ -75,13 +75,12 @@ function restartGame() {
 function startGame() {
 	document.getElementById('intro').style.display = "none";
     for (var i = 0; i < numTargets; i++) {
-        myTarget = new Target(Math.random()*20 + 8, // radius in range 8-28
+        myTarget = new Target(Math.floor(Math.random()*20 + 8), // radius 
                         "rgb(0, 0, 255)",   // color
-                        Math.random()*500,  // x 
-                        Math.random()*500,  // y 
-                        Math.random()*360,  // dir
-                        Math.random()*2+1, // velX
-                        Math.random()*2+1); // velY
+                        Math.floor(Math.random()*500),  // x 
+                        Math.floor(Math.random()*500),  // y 
+                        Math.floor(Math.random()*6-3), // velX - should be negative # too
+                        Math.floor(Math.random()*6-3)); // velY - should be negative # too
         targets.push(myTarget);
     }
     myGameArea.start();
@@ -122,44 +121,33 @@ Component.prototype.draw = function() {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.beginPath();
-    ctx = myGameArea.context;
-    ctx.beginPath();
     ctx.fillStyle = this.color;
     ctx.arc(0, 0, this.radius, 0, 2*Math.PI);
     ctx.fill();
     ctx.restore();
 }
 
-function Target(radius, color, x, y, dir, velX, velY) {
+function Target(radius, color, x, y, velX, velY) {
     Component.call(this, radius, color, x, y);
-    this.dir = dir;
     this.velX = velX;
     this.velY = velY;
 }
 
 Target.prototype.draw = function() {
     ctx = myGameArea.context;
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate((Math.PI / 180) * this.dir);
     ctx.beginPath();
     ctx.fillStyle = this.color;
-    ctx.arc(0, 0, this.radius, 0, 2*Math.PI);
+    ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
     ctx.fill();
-    ctx.restore();
 }
 
 Target.prototype.update = function() {
-    if (this.x + this.radius > 500 && this.velX > 0) {
+    if (this.x + this.radius > 500 && this.velX > 0 || 
+    	this.x - this.radius < 0 && this.velX < 0) {
         this.velX = -(this.velX);
     }
-    if (this.x - this.radius < 0 && this.velX < 0) {
-        this.velX = -(this.velX);
-    }
-    if (this.y + this.radius > 500 && this.velY > 0) {
-        this.velY = -(this.velY);
-    }
-    if (this.y - this.radius < 0 && this.velY < 0) {
+    if (this.y + this.radius > 500 && this.velY > 0 ||
+    	this.y - this.radius < 0 && this.velY < 0) {
         this.velY = -(this.velY);
     }
     this.x += this.velX;
