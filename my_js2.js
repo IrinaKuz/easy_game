@@ -65,8 +65,8 @@ function restartGame() {
     myGamePiece = {};
     targets = [];
     // remove event listeners to avoid same multiple events for window
-	window.removeEventListener('mousemove', getCoordinates);
-	window.removeEventListener('click', checkTargets);
+	window.removeEventListener('touchmove', getCoordinates);
+	window.removeEventListener('touchstart', checkTargets);
     document.getElementById('canvasContainer').innerHTML = '';
  	setup();
     startGame();
@@ -98,8 +98,8 @@ function gamearea() {
 
     this.start = function() {
         this.interval = setInterval(updateGameArea, 20);
-        window.addEventListener('mousemove', getCoordinates);
-        window.addEventListener('click', checkTargets);
+        window.addEventListener('touchmove', getCoordinates);
+        window.addEventListener('touchstart', checkTargets);
     },
     this.clear = function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
