@@ -12,7 +12,6 @@ var marginLeft = parseInt(style.getPropertyValue('margin-left'),10);
 
 // gets x and y coordinates for window object
 function getCoordinates(e) {
-	e.preventDefault();
     myGamePiece.x = e.clientX - marginLeft;
     myGamePiece.y = e.clientY - marginTop;
 }
@@ -65,8 +64,8 @@ function restartGame() {
     myGamePiece = {};
     targets = [];
     // remove event listeners to avoid same multiple events for window
-	window.removeEventListener('touchmove', getCoordinates);
-	window.removeEventListener('touchstart', checkTargets);
+	window.removeEventListener('mousemove', getCoordinates);
+	window.removeEventListener('click', checkTargets);
     document.getElementById('canvasContainer').innerHTML = '';
  	setup();
     startGame();
@@ -98,8 +97,8 @@ function gamearea() {
 
     this.start = function() {
         this.interval = setInterval(updateGameArea, 20);
-        window.addEventListener('touchmove', getCoordinates);
-        window.addEventListener('touchstart', checkTargets);
+        window.addEventListener('mousemove', getCoordinates);
+        window.addEventListener('click', checkTargets);
     },
     this.clear = function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
